@@ -106,15 +106,14 @@ function BookingContent() {
 
   const totalPrice = items.reduce((sum, item) => sum + (item.price || 0), 0)
 
-  const handleConfirmPayment = async (selectedPaymentMethod: string) => {
-    // Validaciones
+  const validateBookingData = () => {
     if (items.length === 0) {
       toast({
         title: "Faltan Paquetes",
         description: "Por favor, agrega al menos un paquete o documento a la lista antes de continuar.",
         variant: "destructive",
       })
-      return
+      return false
     }
 
     const missingFields = []
@@ -129,10 +128,10 @@ function BookingContent() {
         description: `Por favor completa los siguientes campos obligatorios: ${missingFields.join(", ")}.`,
         variant: "destructive",
       })
-      return
+      return false
     }
 
-    const invalidItems = items.filter(item => {
+    const invalidItems = items.filter((item) => {
       if (item.type === "documento") {
         return false
       } else {
@@ -145,10 +144,22 @@ function BookingContent() {
       toast({
         title: "Pesos inválidos",
         description: "Por favor ingresa pesos válidos para todos los paquetes.",
-        variant: "destructive"
+        variant: "destructive",
       })
-      return
+      return false
     }
+
+    return true
+  }
+
+  const handleContinueToPayment = () => {
+    if (validateBookingData()) {
+      setStep(2)
+    }
+  }
+
+  const handleConfirmPayment = async (selectedPaymentMethod: string) => {
+    if (!validateBookingData()) return
 
     setLoading(true)
     setPaymentMethod(selectedPaymentMethod)
@@ -156,9 +167,11 @@ function BookingContent() {
     const aggregatedDescription = items
       .map((item, index) => {
         const desc = item.description || "Sin descripción"
-        const quantityText = item.quantity > 1 ? ` (${item.quantity}x)` : ''
-        const fragileText = item.fragile ? ' [FRÁGIL]' : ''
-        return items.length > 1 ? `Bulto ${index + 1}: ${desc}${quantityText}${fragileText}` : `${desc}${quantityText}${fragileText}`
+        const quantityText = item.quantity > 1 ? ` (${item.quantity}x)` : ""
+        const fragileText = item.fragile ? " [FRÁGIL]" : ""
+        return items.length > 1
+          ? `Bulto ${index + 1}: ${desc}${quantityText}${fragileText}`
+          : `${desc}${quantityText}${fragileText}`
       })
       .join(" | ")
 
@@ -206,23 +219,17 @@ function BookingContent() {
               />
             </div>
             <div className="lg:col-span-1">
-              <ResumenSidebar 
-                items={items} 
-                totalPrice={totalPrice} 
-                onContinue={() => setStep(2)}
+              <ResumenSidebar
+                items={items}
+                totalPrice={totalPrice}
+                onContinue={handleContinueToPayment} // Updated to use the validation handler
                 disabled={items.length === 0}
               />
             </div>
           </div>
         )
       case 2:
-        return (
-          <Step2Payment
-            totalPrice={totalPrice}
-            onConfirmPayment={handleConfirmPayment}
-            loading={loading}
-          />
-        )
+        return <Step2Payment totalPrice={totalPrice} onConfirmPayment={handleConfirmPayment} loading={loading} />
       case 3:
         return (
           <Step3Receipt
@@ -242,21 +249,21 @@ function BookingContent() {
         <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
           {step === 1 ? "Reserva de Envíos" : step === 2 ? "Método de Pago" : "Comprobante de Envío"}
         </h1>
-        
+
         {/* Progress Bar */}
         <div className="max-w-2xl mx-auto mb-8">
           <div className="flex items-center justify-between">
             {[1, 2, 3].map((stepNumber) => (
               <div key={stepNumber} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                  step >= stepNumber ? 'bg-[#4ec3b3] text-white' : 'bg-slate-200 text-slate-400'
-                }`}>
+                <div
+                  className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                    step >= stepNumber ? "bg-[#4ec3b3] text-white" : "bg-slate-200 text-slate-400"
+                  }`}
+                >
                   {stepNumber}
                 </div>
                 {stepNumber < 3 && (
-                  <div className={`w-16 h-1 mx-2 ${
-                    step > stepNumber ? 'bg-[#4ec3b3]' : 'bg-slate-200'
-                  }`} />
+                  <div className={`w-16 h-1 mx-2 ${step > stepNumber ? "bg-[#4ec3b3]" : "bg-slate-200"}`} />
                 )}
               </div>
             ))}
