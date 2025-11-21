@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               {/* Logo para fondo oscuro */}
               <img 
-                src="/logo2.png" 
+                src="/logo2.PNG" 
                 alt="Beluga Transporte"
                 className="h-8 w-auto"
               />
