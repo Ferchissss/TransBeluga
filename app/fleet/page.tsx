@@ -22,7 +22,7 @@ export default function About() {
       model: 'Volvo FM',
       capacity: '16 toneladas',
       status: 'Disponible',
-      image: '/4.jpg',
+      image: '/4.JPG',
     },
     {
       model: 'Volvo FH12',
