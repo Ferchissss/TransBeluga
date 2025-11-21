@@ -96,11 +96,11 @@ export default function QuotePage() {
             </p>
           </div>
 
-          <Card className="border-slate-200 shadow-lg">
-            <CardHeader className="bg-slate-900 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-[#4ec3b3]" />
-                Calculadora de Tarifas
+          <Card className="border-slate-200 shadow-lg p-0 gap-0 overflow-hidden">
+            <CardHeader className="bg-slate-900 text-white p-6">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <Calculator className="h-6 w-6 text-[#4ec3b3] flex-shrink-0" />
+                <span className="break-words">Calculadora de Tarifas</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
