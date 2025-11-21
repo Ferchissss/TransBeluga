@@ -84,7 +84,7 @@ export default function Header() {
         {/* Logo único con imagen que cambia según el fondo */}
         <Link href="/" className="flex items-center">
           <img 
-            src={shouldShowSolidHeader ? "/logo1.png" : "/logo2.png"} 
+            src={shouldShowSolidHeader ? "/logo1.PNG" : "/logo2.PNG"} 
             alt="Beluga Transporte"
             className="h-8 w-auto"
           />
